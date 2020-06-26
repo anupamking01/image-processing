@@ -1,0 +1,72 @@
+import cv2
+import numpy as np
+from matplotlib import pyplot as plt
+
+def edgeDetectionCanny():
+    edges = cv2.Canny(img,100,200)
+    plt.subplot(122),plt.imshow(edges,cmap = 'gray')
+    plt.title('Edge Image'), plt.xticks([]), plt.yticks([])
+    plt.show()
+
+
+def detect(img):
+    new_image = np.zeros(img.shape)
+    for i in range(0,img.shape[0]):
+        for j in range(0,img.shape[1]):
+            if img[i,j,0]==0 and img[i,j,1]==0 and img[i,j,2]==0:
+                new_image[i,j,0]=0
+                new_image[i,j,1]=240
+                new_image[i,j,2]=0
+            else:
+                new_image[i,j]=img[i,j]
+    return new_image
+
+plt.show()
+
+#this function shows the lengths of the connected edges
+def edgeLen(img):
+    mm={}
+    for i in range(0,img.shape[0]):
+        for j in range(0,img.shape[1]):
+            #if pixel does not equal to then continue because they are not connected
+            if img[i,j,0]!=0 or img[i,j,1]!=240 or img[i,j,2]!=0:
+                continue
+            if i not in mm:
+                mm[i]=0
+            if j not in mm:
+                mm[j]=0
+                #dp
+            mm[i]+=1
+            mm[j]+=1
+    l1,l2=0,0
+    print(mm)
+    for a in mm:
+        # refining the dp solution
+        if mm[a]>l1:
+            l2=l1
+            l1=a
+        elif mm[a]>l2:
+            l2=mm[a]
+    print("length of edge 1",l1)
+    print("length of edge 2",l2)
+    
+edgeLen(detect(img))
+                    
+                    
+    
+    
+
+img = cv2.imread('messi.jpg',0)
+#edges = cv2.Canny(img,100,200)
+
+plt.subplot(121),plt.imshow(img,cmap = 'gray')
+plt.title('Original Image'), plt.xticks([]), plt.yticks([])
+#plt.subplot(122),plt.imshow(edges,cmap = 'gray')
+#plt.title('Edge Image'), plt.xticks([]), plt.yticks([])
+
+plt.show()
+
+edgeDetectionCanny()
+
+
+
